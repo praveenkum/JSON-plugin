@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<style>
+	fieldset.scheduler-border {
+		border: 1px groove #ddd !important;
+		padding: 0 1.4em 1.4em 1.4em !important;
+		margin: 0 0 1.5em 0 !important;
+		-webkit-box-shadow: 0px 0px 0px 0px #000;
+		box-shadow: 0px 0px 0px 0px #000;
+	}
+
+	legend.scheduler-border {
+		font-size: 1.2em !important;
+		font-weight: bold !important;
+		text-align: left !important;
+		width: auto;
+		padding: 0 10px;
+		border-bottom: none;
+	}
+</style>
+<script type="text/javascript">
+	document.getElementById('import').onclick = function() {
+    debugger;
+    var files = document.getElementById('selectFiles').files;
+  console.log(files);
+  if (files.length <= 0) {
+    return false;
+  }
+
+  var fr = new FileReader();
+
+  fr.onload = function(e) { 
+  console.log(e);
+  debugger;
+    var result = [];
+    result.push(JSON.parse(e.target.result));
+    result.forEach(function (item, index) {
+      for (const lee in item) {
+        const values = item[lee];
+        var fieldSetNode = document.createElement("fieldSet");
+        fieldSetNode.setAttribute('class', 'scheduler-border');
+
+        var legendText = document.createElement("LEGEND");
+        var t = document.createTextNode(lee);
+        legendText.setAttribute('class', 'scheduler-border');
+        legendText.appendChild(t);
+        fieldSetNode.appendChild(legendText);
+
+        for (const newVal in values) {
+          console.log(newVal);
+          console.log(values[newVal]);
+
+          var node1 = document.createElement("label");
+          var t = document.createTextNode(newVal);
+          node1.appendChild(t);
+
+          var divElm = document.createElement("div");
+          divElm.setAttribute("class", "col-md-4");
+          divElm.appendChild(node1);
+
+          var node2 = document.createElement("input");
+          node2.setAttribute("value", values[newVal]);
+          node2.setAttribute("class", "form-control");
+          divElm.appendChild(node2);
+
+          fieldSetNode.appendChild(divElm);
+
+          document.getElementById("div_form").appendChild(fieldSetNode);
+        }
+      }
+    });
+    // var formatted = JSON.stringify(result, null, 2);
+    //     document.getElementById('result').value = formatted;
+  }
+
+  fr.readAsText(files.item(0));
+};
+</script>
+<my-app>loading</my-app>
