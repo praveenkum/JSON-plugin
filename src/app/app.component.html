@@ -2,9 +2,11 @@
 <p>
 	Start editing to see some magic happen :)
 </p>
-<input type="file" id="selectFiles" value="Import" /><br />
+<input type="file" id="selectFiles" value="Import" onchange="fileUpl()" /><br />
+<select id="ddl_key_values" onchange="ddlChangeKeys()"></select>
 <button id="import">Import</button>
-<textarea id="result"></textarea>
 
+<a id="downloadAnchorElem" style="display:none"></a>
 <div id="div_form" style="margin-left: 15px;margin-right: 15px;">
 </div>
+<a id="downloadAnchorElem" style="display:none"></a>

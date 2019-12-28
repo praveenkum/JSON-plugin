@@ -20,34 +20,59 @@
 	}
 </style>
 <script type="text/javascript">
-	document.getElementById('import').onclick = function() {
-    debugger;
-    var files = document.getElementById('selectFiles').files;
-  console.log(files);
-  if (files.length <= 0) {
-    return false;
-  }
+var values;
+var result = [];
+var selectedVal;
+var fileName = '';
 
-  var fr = new FileReader();
+function fileUpl(){
+  var files = document.getElementById('selectFiles').files;
+   
+    console.log(files);
+    if (files.length <= 0) {
+      return false;
+    }
+
+     var fr = new FileReader();
+  
+
+  
+
 
   fr.onload = function(e) { 
   console.log(e);
-  debugger;
-    var result = [];
+   
+    
+    
     result.push(JSON.parse(e.target.result));
     result.forEach(function (item, index) {
+      values = item;
+      var x = document.getElementById("ddl_key_values");
+       
       for (const lee in item) {
-        const values = item[lee];
-        var fieldSetNode = document.createElement("fieldSet");
-        fieldSetNode.setAttribute('class', 'scheduler-border');
+         
+        //values = item[lee];
 
+        var option = document.createElement("option");
+        option.text = lee;
+        x.add(option);
+
+        /*var fieldSetNode = document.createElement("fieldSet");
+        fieldSetNode.setAttribute('class', 'scheduler-border');
+     
         var legendText = document.createElement("LEGEND");
         var t = document.createTextNode(lee);
         legendText.setAttribute('class', 'scheduler-border');
         legendText.appendChild(t);
-        fieldSetNode.appendChild(legendText);
+        fieldSetNode.appendChild(legendText);*/
+      }
+        var option = document.createElement("option");
+        option.text = "Select Key";
+        option.selected = "true";
+        x.add(option);
 
-        for (const newVal in values) {
+
+        /*for (const newVal in values) {
           console.log(newVal);
           console.log(values[newVal]);
 
@@ -67,14 +92,83 @@
           fieldSetNode.appendChild(divElm);
 
           document.getElementById("div_form").appendChild(fieldSetNode);
-        }
-      }
+        }*/
+      
     });
     // var formatted = JSON.stringify(result, null, 2);
     //     document.getElementById('result').value = formatted;
   }
 
   fr.readAsText(files.item(0));
+}
+	document.getElementById('import').onclick = function() {
+    
+    fileName = files[0].name;
+    var files = document.getElementById('selectFiles').files;
+    console.log(files);
+    if (files.length <= 0) {
+      return false;
+    }
+
 };
+
+function ddlChangeKeys(){
+  selectedVal = document.getElementById("ddl_key_values").value;
+  document.getElementById("div_form").innerHTML = '';
+
+  for (const lee in values){
+    var item = values[lee]
+    if(lee == selectedVal){
+    for (const newVal in item) {
+        console.log(newVal);
+        console.log(item[newVal]);
+
+        
+ 
+        var node1 = document.createElement("label");
+        var t = document.createTextNode(newVal);
+        node1.appendChild(t);
+
+        var divElm = document.createElement("div");
+        divElm.setAttribute("class", "col-md-4");
+        divElm.appendChild(node1);
+        
+        var idVal = newVal.replace(/\s/g,'');
+        var node2 = document.createElement("input");
+        node2.setAttribute("value", item[newVal]);
+        node2.setAttribute("id", idVal);
+        node2.setAttribute("class", "form-control");
+        divElm.appendChild(node2);
+
+        //fieldSetNode.appendChild(divElm);
+
+        document.getElementById("div_form").appendChild(divElm);
+      }
+      var x = document.createElement("INPUT");
+      x.setAttribute("type", "button");
+      x.setAttribute("onclick", "updateJSON()");
+      x.setAttribute("value", "Update & Download");
+      document.getElementById("div_form").appendChild(x);
+    }
+  }
+
+}
+
+function updateJSON(){
+   
+ for (const lee in values){
+    var item = values[lee];
+    if(lee == selectedVal){
+      for (const newVal in item) {
+          item[newVal] = document.getElementById(newVal).value;
+      }
+    }
+ }
+  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(result, 0, 4));
+  var dlAnchorElem = document.getElementById('downloadAnchorElem');
+  dlAnchorElem.setAttribute("href",dataStr);
+  dlAnchorElem.setAttribute("download", fileName);
+  dlAnchorElem.click();
+}
 </script>
 <my-app>loading</my-app>
