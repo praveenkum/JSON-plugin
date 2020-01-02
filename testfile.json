@@ -1,0 +1,14 @@
+{
+  "testfile1": {
+    "name": "praveen",
+    "age": "27",
+    "email": "praveengovindaraji@gmail.com",
+    "phone": "9677587805"
+  },
+  "testfile2": {
+    "name": "vinoth",
+    "age": "29",
+    "email": "vinodgovindaraji@gmail.com",
+    "phone": "9952515186"
+  }
+}
