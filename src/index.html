@@ -18,12 +18,106 @@
 		padding: 0 10px;
 		border-bottom: none;
 	}
+
+  .btnStyle{
+    margin-top: 10px;
+    margin-left: 15px;
+  }
 </style>
 <script type="text/javascript">
 var values;
 var result = [];
 var selectedVal;
-var fileName = '';
+
+//For cloning JSON file and download with edited key name values
+var clonevalues;
+var cloneResult = [];
+
+var newResultColl = {};
+var cloneselectedVal;
+var selectedActualVal;
+
+var currentDate = new Date();
+var fileName = currentDate.getTime();
+fileName = fileName + ".json";
+
+var updatedKeyName='';
+
+//For cloning starts here
+function fileUplClone(){
+  debugger;
+  var clone_files = document.getElementById('selectCloneFiles').files;
+    if (clone_files.length <= 0) {
+      return false;
+    }
+
+     var fr1 = new FileReader();
+
+  fr1.onload = function(e) { 
+    cloneResult.push(JSON.parse(e.target.result));
+    cloneResult.forEach(function (item, index) {
+      clonevalues = item;
+      var x = document.getElementById("ddl_key_clone_values");
+       
+      for (const lee in item) {
+        var option = document.createElement("option");
+        option.text = lee;
+        x.add(option);
+      }
+        var option = document.createElement("option");
+        option.text = "Select Key";
+        option.selected = "true";
+        x.add(option);
+    });
+  }
+
+  fr1.readAsText(clone_files.item(0));
+}
+	document.getElementById('AddClone').onclick = function() {
+    
+    fileName = clone_files[0].name;
+    var clone_files = document.getElementById('selectCloneFiles').files;
+    if (clone_files.length <= 0) {
+      return false;
+    }
+
+};
+
+function updatedValue(val){
+  updatedKeyName = val.trim();
+  debugger;
+  for (const lee in clonevalues){
+    var item = clonevalues[lee]
+    if(lee == cloneselectedVal){
+      //values[updatedKeyName] = item;
+      newResultColl[updatedKeyName] = item;
+    }
+  }
+}
+
+function ddlCloneChangeKeys(){
+  
+  cloneselectedVal = document.getElementById("ddl_key_clone_values").value;
+
+  if(cloneselectedVal != "Select"){
+    if(cloneselectedVal !=null && cloneselectedVal.includes('.')){
+      selectedActualVal = cloneselectedVal.split('.')[0];
+    }
+    document.getElementById("txtUpdateKey").value = selectedActualVal;
+    document.getElementById("div_form").innerHTML = '';
+  }
+}
+
+function updateCloneJSON(){
+
+  var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(newResultColl, 0, 4));
+  var dlAnchorElem = document.getElementById('downloadAnchorElem');
+  dlAnchorElem.setAttribute("href",dataStr);
+  dlAnchorElem.setAttribute("download", fileName);
+  dlAnchorElem.click();
+
+}
+//For cloning ends here
 
 function fileUpl(){
   var files = document.getElementById('selectFiles').files;
@@ -34,10 +128,6 @@ function fileUpl(){
     }
 
      var fr = new FileReader();
-  
-
-  
-
 
   fr.onload = function(e) { 
   console.log(e);
@@ -57,46 +147,14 @@ function fileUpl(){
         option.text = lee;
         x.add(option);
 
-        /*var fieldSetNode = document.createElement("fieldSet");
-        fieldSetNode.setAttribute('class', 'scheduler-border');
-     
-        var legendText = document.createElement("LEGEND");
-        var t = document.createTextNode(lee);
-        legendText.setAttribute('class', 'scheduler-border');
-        legendText.appendChild(t);
-        fieldSetNode.appendChild(legendText);*/
+      
       }
         var option = document.createElement("option");
         option.text = "Select Key";
         option.selected = "true";
         x.add(option);
-
-
-        /*for (const newVal in values) {
-          console.log(newVal);
-          console.log(values[newVal]);
-
-          var node1 = document.createElement("label");
-          var t = document.createTextNode(newVal);
-          node1.appendChild(t);
-
-          var divElm = document.createElement("div");
-          divElm.setAttribute("class", "col-md-4");
-          divElm.appendChild(node1);
-
-          var node2 = document.createElement("input");
-          node2.setAttribute("value", values[newVal]);
-          node2.setAttribute("class", "form-control");
-          divElm.appendChild(node2);
-
-          fieldSetNode.appendChild(divElm);
-
-          document.getElementById("div_form").appendChild(fieldSetNode);
-        }*/
       
     });
-    // var formatted = JSON.stringify(result, null, 2);
-    //     document.getElementById('result').value = formatted;
   }
 
   fr.readAsText(files.item(0));
@@ -112,16 +170,47 @@ function fileUpl(){
 
 };
 
+
+
+document.getElementById('btnClear').onclick = function() {
+    
+    document.getElementById("div_form").innerHTML = '';
+
+};
+
 function ddlChangeKeys(){
   selectedVal = document.getElementById("ddl_key_values").value;
+
+  if(selectedVal != "Select"){
   document.getElementById("div_form").innerHTML = '';
 
   for (const lee in values){
+    debugger;
     var item = values[lee]
     if(lee == selectedVal){
-    for (const newVal in item) {
+
+    
+    var sortedItem = {};
+
+    for(let i in item){
+      if(item[i] == "" || item[i] == null){
+          sortedItem[i] = item[i];
+      }
+    }
+
+    for(let i in item){
+      if(item[i] != "" && item[i]!=null){
+          sortedItem[i] = item[i];
+      }
+    }
+
+
+
+
+
+    for (const newVal in sortedItem) {
         console.log(newVal);
-        console.log(item[newVal]);
+        console.log(sortedItem[newVal]);
 
         
  
@@ -135,7 +224,7 @@ function ddlChangeKeys(){
         
         var idVal = newVal.replace(/\s/g,'');
         var node2 = document.createElement("input");
-        node2.setAttribute("value", item[newVal]);
+        node2.setAttribute("value", sortedItem[newVal]);
         node2.setAttribute("id", idVal);
         node2.setAttribute("class", "form-control");
         divElm.appendChild(node2);
@@ -148,10 +237,12 @@ function ddlChangeKeys(){
       x.setAttribute("type", "button");
       x.setAttribute("onclick", "updateJSON()");
       x.setAttribute("value", "Update & Download");
+      x.setAttribute("class","btnStyle");
       document.getElementById("div_form").appendChild(x);
     }
   }
 
+}
 }
 
 function updateJSON(){
