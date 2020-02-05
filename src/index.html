@@ -44,6 +44,10 @@
     cursor: inherit;
     display: block;
 }
+
+.autoModal.modal .modal-body{
+    max-height: 100%;
+}
 </style>
 <script type="text/javascript">
 var values;
@@ -152,47 +156,33 @@ function updateCloneJSON(){
 //For cloning ends here
 
 function fileUpl(){
+  result = [];
   var files = document.getElementById('selectFiles').files;
+  $("option[class='key_name']").remove();
+ 
 
-  $('#ddl_key_values')
-    .find('option')
-    .remove()
-    .end()
-    .append('<option value="Select">Select</option>')
-    .val('Select');
-   
-    console.log(files);
-    if (files.length <= 0) {
-      return false;
-    }
+  if (files.length <= 0) {
+    return false;
+  }
 
-     var fr = new FileReader();
+  var fr = new FileReader();
 
   fr.onload = function(e) { 
-  console.log(e);
-   
-    
-    
     result.push(JSON.parse(e.target.result));
     result.forEach(function (item, index) {
       values = item;
       var x = document.getElementById("ddl_key_values");
        
       for (const lee in item) {
-         
-        //values = item[lee];
-
         var option = document.createElement("option");
         option.text = lee;
+        option.setAttribute("class", "key_name");
         x.add(option);
-
-      
       }
         var option = document.createElement("option");
         option.text = "Select Key";
         option.selected = "true";
         x.add(option);
-      
     });
   }
 
@@ -202,7 +192,6 @@ function fileUpl(){
     
     fileName = files[0].name;
     var files = document.getElementById('selectFiles').files;
-    console.log(files);
     if (files.length <= 0) {
       return false;
     }
@@ -214,10 +203,14 @@ function fileUpl(){
 document.getElementById('btnClear').onclick = function() {
     
     document.getElementById("div_form").innerHTML = '';
-    $("#ddl_key_values").empty();
+    document.getElementById("selectFiles").value = "";
+    document.getElementById("selectCloneFiles").value = "";
+    $("option[class='key_name']").remove();
+    result = [];
     $("#btn_download").hide();
 
 };
+
 
 function ddlChangeKeys(){
   selectedVal = document.getElementById("ddl_key_values").value;
@@ -226,7 +219,6 @@ function ddlChangeKeys(){
   document.getElementById("div_form").innerHTML = '';
 
   for (const lee in values){
-    debugger;
     var item = values[lee]
     if(lee == selectedVal){
 
@@ -250,11 +242,6 @@ function ddlChangeKeys(){
 
 
     for (const newVal in sortedItem) {
-        console.log(newVal);
-        console.log(sortedItem[newVal]);
-
-        
- 
         var node1 = document.createElement("label");
         var t = document.createTextNode(newVal);
         node1.appendChild(t);
@@ -290,11 +277,13 @@ function ddlChangeKeys(){
 }
 
 function saveJSON(){
+  debugger;
   for (const lee in values){
     var item = values[lee];
     if(lee == selectedVal){
       for (const newVal in item) {
-          item[newVal] = document.getElementById(newVal).value;
+        var idVal = newVal.replace(/\s/g,'');
+        item[newVal] = document.getElementById(idVal).value;
       }
     }
  }

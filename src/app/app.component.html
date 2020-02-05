@@ -29,7 +29,7 @@
         <button id="AddClone" class="btn btn-default">Add</button>
         <br/>
         <br/>
-        <textarea id="txtUpdateKey" class="form-control" rows="4" cols="50" style="height: 368px;width: 633px;" onchange="updatedValue(this.value)"></textarea>
+        <textarea id="txtUpdateKey" class="form-control" rows="4" cols="50" onchange="updatedValue(this.value)"></textarea>
         <!--<input type="text" id="txtUpdateKey" onchange="updatedValue(this.value)">-->
       </div>
       <br/>
@@ -53,14 +53,15 @@
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">Modal Header</h4>
         </div>
-        <div class="modal-body" >
+        <div class="modal-body">
            <div id="div_form">
           </div>
         </div>
         <br/>
-        <div class="modal-footer" style="position:relative;top: 10px;text-align:center;border-top: none;">
-          <button id="btn_Save" style="display:none;" type="button" onclick="saveJSON()" class="btn btn-default" data-dismiss="modal" >Save </button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <div class="modal-footer" style="top: 10px;text-align: center;clear: both;border:none;">
+        <!-- <div class="modal-footer" style="text-align:center;"> -->
+          <button id="btn_Save" style="display:none;" type="button" onclick="saveJSON()" class="btn btn-default"  style="margin:auto;" data-dismiss="modal" >Save </button>&nbsp;&nbsp;
+          <button type="button" class="btn btn-default"  style="margin:auto;" data-dismiss="modal">Close</button>
         </div>
       </div>
       
